@@ -34,7 +34,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import Logo from "@/components/logo";
-import { useAuthContext } from "@/context/auth-provider";
+import { useAuthContext } from "@/hooks/use-auth-context";
 import LogoutDialog from "./LogoutDialog";
 import { useTheme } from "@/context/theme-provider";
 
@@ -64,7 +64,7 @@ const Asidebar = () => {
 
     {
       title: "Settings",
-      url: "#",
+      url: "/settings",
       icon: Settings,
     },
   ];

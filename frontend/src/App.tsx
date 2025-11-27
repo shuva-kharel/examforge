@@ -6,6 +6,7 @@ import ConfirmAccount from "./pages/auth/confirm-account";
 import ResetPassword from "./pages/auth/reset-password";
 import VerifyMfa from "./pages/auth/verify-mfa";
 import Home from "./pages/home";
+import Settings from "./pages/settings";
 import Session from "./pages/sessions";
 import NotFound from "./pages/notFound";
 import AppLayout from "./layout/AppLayout";
@@ -22,49 +23,50 @@ import CallToAction from "./components/landingPage/CallToAction";
 import Footer from "./components/landingPage/Footer";
 
 function App() {
-    return (
-        <BrowserRouter>
-            <Routes>
-                {/* Public Landing Page */}
-                <Route
-                    path="/"
-                    element={
-                        <div className="min-h-screen bg-white">
-                            <Hero />
-                            <Features />
-                            <WhySection />
-                            <DemoPreview />
-                            <CallToAction />
-                            <Footer />
-                        </div>
-                    }
-                />
+  return (
+    <BrowserRouter>
+      <Routes>
+        {/* Public Landing Page */}
+        <Route
+          path="/"
+          element={
+            <div className="min-h-screen bg-white">
+              <Hero />
+              <Features />
+              <WhySection />
+              <DemoPreview />
+              <CallToAction />
+              <Footer />
+            </div>
+          }
+        />
 
-                {/* Public Auth Routes */}
-                <Route element={<PublicRoute />}>
-                    <Route element={<BaseLayout />}>
-                        <Route path="login" element={<Login />} />
-                        <Route path="signup" element={<SignUp />} />
-                        <Route path="confirm-account" element={<ConfirmAccount />} />
-                        <Route path="forgot-password" element={<ForgotPassword />} />
-                        <Route path="reset-password" element={<ResetPassword />} />
-                        <Route path="verify-mfa" element={<VerifyMfa />} />
-                    </Route>
-                </Route>
+        {/* Public Auth Routes */}
+        <Route element={<PublicRoute />}>
+          <Route element={<BaseLayout />}>
+            <Route path="login" element={<Login />} />
+            <Route path="signup" element={<SignUp />} />
+            <Route path="confirm-account" element={<ConfirmAccount />} />
+            <Route path="forgot-password" element={<ForgotPassword />} />
+            <Route path="reset-password" element={<ResetPassword />} />
+            <Route path="verify-mfa" element={<VerifyMfa />} />
+          </Route>
+        </Route>
 
-                {/* Protected Routes */}
-                <Route element={<AuthRoute />}>
-                    <Route element={<AppLayout />}>
-                        <Route path="home" element={<Home />} />
-                        <Route path="sessions" element={<Session />} />
-                    </Route>
-                </Route>
+        {/* Protected Routes */}
+        <Route element={<AuthRoute />}>
+          <Route element={<AppLayout />}>
+            <Route path="home" element={<Home />} />
+            <Route path="settings" element={<Settings />} />
+            <Route path="sessions" element={<Session />} />
+          </Route>
+        </Route>
 
-                {/* Catch-all for undefined routes */}
-                <Route path="*" element={<NotFound />} />
-            </Routes>
-        </BrowserRouter>
-    );
+        {/* Catch-all for undefined routes */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;

@@ -9,6 +9,7 @@ const useAuth = () => {
     queryFn: getUserSessionQueryFn,
     staleTime: Infinity,
     retry: 1,
+    refetchOnWindowFocus: false, // Add this line
   });
   return query;
 };

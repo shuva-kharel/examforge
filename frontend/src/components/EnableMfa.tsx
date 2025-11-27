@@ -28,7 +28,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { useAuthContext } from "@/context/auth-provider";
+import { useAuthContext } from "@/hooks/use-auth-context";
 import { mfaSetupQueryFn, verifyMFAMutationFn } from "@/lib/api";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
