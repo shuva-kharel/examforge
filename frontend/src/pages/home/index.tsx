@@ -1,98 +1,217 @@
-import { useState } from "react";
-import { Plus, BookOpen, Clock, FileText } from "lucide-react";
+"use client";
+import React, { useState } from "react";
+import { Plus, BookOpen, Target, Award } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useTheme } from "@/context/theme-provider.tsx"; // Adjust the import path as needed
 
-interface GeneratedItem {
+interface Tile {
   id: string;
   class: string;
-  difficulty: string;
   subject: string;
-  title: string;
-  date: string;
-  questions: number;
-  duration: string;
+  difficulty: string;
+  createdAt: Date;
 }
 
-const HomePage = () => {
-  const [showGenerator, setShowGenerator] = useState(false);
-  const [generatedItems, setGeneratedItems] = useState<GeneratedItem[]>([]);
+const classOptions = [
+  "Math",
+  "Science",
+  "English",
+  "History",
+  "Art",
+  "Music",
+  "Physical Education",
+  "Computer Science",
+];
+
+const subjectOptions = [
+  "Algebra",
+  "Geometry",
+  "Biology",
+  "Chemistry",
+  "Physics",
+  "Literature",
+  "Writing",
+  "World History",
+  "US History",
+  "Painting",
+  "Sculpture",
+  "Piano",
+  "Guitar",
+  "Basketball",
+  "Soccer",
+  "Programming",
+  "Web Development",
+];
+
+const difficultyOptions = ["Beginner", "Intermediate", "Advanced", "Expert"];
+
+const difficultyColors = {
+  Beginner:
+    "bg-green-100 text-green-800 border-green-200 dark:bg-green-900 dark:text-green-200 dark:border-green-700",
+  Intermediate:
+    "bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900 dark:text-blue-200 dark:border-blue-700",
+  Advanced:
+    "bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-900 dark:text-orange-200 dark:border-orange-700",
+  Expert:
+    "bg-red-100 text-red-800 border-red-200 dark:bg-red-900 dark:text-red-200 dark:border-red-700",
+};
+
+const Home = () => {
+  const { theme } = useTheme();
+  const [tiles, setTiles] = useState<Tile[]>([]);
+  const [isFormOpen, setIsFormOpen] = useState(false);
   const [formData, setFormData] = useState({
     class: "",
-    difficulty: "",
     subject: "",
+    difficulty: "",
   });
 
-  const classes = ["Class 9", "Class 10", "Class 11", "Class 12"];
-  const difficulties = ["Easy", "Medium", "Hard"];
-  const subjects = [
-    "Mathematics",
-    "Science",
-    "English",
-    "History",
-    "Geography",
-  ];
+  const handleGenerateTile = () => {
+    if (!formData.class || !formData.subject || !formData.difficulty) return;
 
-  const handleGenerate = () => {
-    if (!formData.class || !formData.difficulty || !formData.subject) {
-      alert("Please fill all fields");
-      return;
-    }
-
-    const newItem: GeneratedItem = {
+    const newTile: Tile = {
       id: Date.now().toString(),
       class: formData.class,
-      difficulty: formData.difficulty,
       subject: formData.subject,
-      title: `${formData.subject} - ${formData.class}`,
-      date: new Date().toLocaleDateString(),
-      questions: Math.floor(Math.random() * 20) + 10,
-      duration: `${Math.floor(Math.random() * 60) + 30} mins`,
+      difficulty: formData.difficulty,
+      createdAt: new Date(),
     };
 
-    setGeneratedItems((prev) => [newItem, ...prev]);
-    setShowGenerator(false);
-    setFormData({ class: "", difficulty: "", subject: "" });
+    setTiles((prev) => [newTile, ...prev]);
+    setFormData({ class: "", subject: "", difficulty: "" });
+    setIsFormOpen(false);
+  };
+
+  const getSubjectIcon = (subject: string) => {
+    if (
+      subject.includes("Math") ||
+      subject.includes("Algebra") ||
+      subject.includes("Geometry")
+    ) {
+      return <Target className="w-6 h-6" />;
+    }
+    if (
+      subject.includes("Science") ||
+      subject.includes("Biology") ||
+      subject.includes("Chemistry") ||
+      subject.includes("Physics")
+    ) {
+      return <BookOpen className="w-6 h-6" />;
+    }
+    if (
+      subject.includes("Programming") ||
+      subject.includes("Computer") ||
+      subject.includes("Web")
+    ) {
+      return <Award className="w-6 h-6" />;
+    }
+    return <BookOpen className="w-6 h-6" />;
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-6">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+      <div className="max-w-5xl mx-auto px-6 py-12">
         {/* Header */}
-        <header className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            Welcome to ExamForge
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            Learning Dashboard
           </h1>
-          <p className="text-gray-600">
-            Create and manage your examination papers with ease
+          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            Create and organize your learning materials. Click the plus tile to
+            begin.
           </p>
-        </header>
+        </div>
 
-        {/* Main Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {/* Add New Tile */}
-          <div
-            onClick={() => setShowGenerator(true)}
-            className="aspect-square bg-white rounded-2xl shadow-lg border-2 border-dashed border-gray-300 hover:border-blue-500 hover:shadow-xl transition-all duration-300 cursor-pointer group flex items-center justify-center"
+        {/* Tile Grid */}
+        <motion.div
+          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8"
+          layout
+        >
+          {/* + Tile */}
+          <motion.div
+            layout
+            whileHover={{ scale: 1.02, y: -2 }}
+            whileTap={{ scale: 0.98 }}
+            className="aspect-square bg-white dark:bg-gray-800 rounded-2xl border-2 border-dashed border-gray-300 dark:border-gray-600
+                     hover:border-blue-400 dark:hover:border-blue-500 hover:shadow-lg transition-all duration-300 cursor-pointer
+                     flex items-center justify-center group"
+            onClick={() => setIsFormOpen(true)}
           >
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:bg-blue-500 transition-colors">
-                <Plus className="w-8 h-8 text-blue-600 group-hover:text-white transition-colors" />
+            <Plus className="w-12 h-12 text-gray-400 dark:text-gray-500 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors duration-300" />
+          </motion.div>
+
+          {/* Generated Tiles */}
+          <AnimatePresence>
+            {tiles.map((tile) => (
+              <motion.div
+                key={tile.id}
+                layout
+                initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.8, y: -20 }}
+                whileHover={{ y: -4 }}
+                className="aspect-square bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-md
+                         hover:shadow-xl dark:hover:shadow-2xl transition-all duration-300 p-6 flex flex-col justify-between
+                         cursor-pointer group"
+              >
+                <div className="flex items-start justify-between">
+                  <div className="text-gray-500 dark:text-gray-400">
+                    {getSubjectIcon(tile.subject)}
+                  </div>
+                  <span
+                    className={`text-xs px-2 py-1 rounded-full border ${
+                      difficultyColors[
+                        tile.difficulty as keyof typeof difficultyColors
+                      ]
+                    }`}
+                  >
+                    {tile.difficulty}
+                  </span>
+                </div>
+
+                <div className="flex-1 flex flex-col justify-center">
+                  <h3 className="font-bold text-gray-900 dark:text-white text-lg mb-1 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                    {tile.class}
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-300 text-sm">
+                    {tile.subject}
+                  </p>
+                </div>
+
+                <div className="text-xs text-gray-400 dark:text-gray-500 mt-2">
+                  {tile.createdAt.toLocaleDateString()}
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </motion.div>
+
+        {/* Create Tile Form */}
+        <AnimatePresence>
+          {isFormOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0, y: -20 }}
+              animate={{ opacity: 1, height: "auto", y: 0 }}
+              exit={{ opacity: 0, height: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-lg p-8 mb-8 overflow-hidden"
+            >
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  Create New Tile
+                </h2>
+                <button
+                  onClick={() => setIsFormOpen(false)}
+                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition"
+                >
+                  <Plus className="w-6 h-6 rotate-45" />
+                </button>
               </div>
-              <p className="text-lg font-semibold text-gray-700 group-hover:text-blue-600 transition-colors">
-                Create New
-              </p>
-            </div>
-          </div>
 
-          {/* Generator Menu */}
-          {showGenerator && (
-            <div className="aspect-square bg-white rounded-2xl shadow-xl border border-gray-200 p-6 col-span-1 md:col-span-2 lg:col-span-3">
-              <h3 className="text-xl font-bold text-gray-900 mb-6">
-                Create New Exam Paper
-              </h3>
-
-              <div className="space-y-4">
+              {/* Inputs */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Class
                   </label>
                   <select
@@ -103,42 +222,26 @@ const HomePage = () => {
                         class: e.target.value,
                       }))
                     }
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2
+                             focus:ring-blue-500 focus:border-blue-500 transition bg-white dark:bg-gray-700
+                             text-gray-900 dark:text-white"
                   >
-                    <option value="">Select Class</option>
-                    {classes.map((cls) => (
-                      <option key={cls} value={cls}>
-                        {cls}
+                    <option
+                      value=""
+                      className="text-gray-500 dark:text-gray-400"
+                    >
+                      Select a class
+                    </option>
+                    {classOptions.map((o) => (
+                      <option key={o} className="text-gray-900 dark:text-white">
+                        {o}
                       </option>
                     ))}
                   </select>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Difficulty
-                  </label>
-                  <select
-                    value={formData.difficulty}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        difficulty: e.target.value,
-                      }))
-                    }
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  >
-                    <option value="">Select Difficulty</option>
-                    {difficulties.map((diff) => (
-                      <option key={diff} value={diff}>
-                        {diff}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Subject
                   </label>
                   <select
@@ -149,95 +252,79 @@ const HomePage = () => {
                         subject: e.target.value,
                       }))
                     }
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2
+                             focus:ring-blue-500 focus:border-blue-500 transition bg-white dark:bg-gray-700
+                             text-gray-900 dark:text-white"
                   >
-                    <option value="">Select Subject</option>
-                    {subjects.map((sub) => (
-                      <option key={sub} value={sub}>
-                        {sub}
+                    <option
+                      value=""
+                      className="text-gray-500 dark:text-gray-400"
+                    >
+                      Select a subject
+                    </option>
+                    {subjectOptions.map((o) => (
+                      <option key={o} className="text-gray-900 dark:text-white">
+                        {o}
                       </option>
                     ))}
                   </select>
                 </div>
 
-                <button
-                  onClick={handleGenerate}
-                  className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 mt-4"
-                >
-                  Generate Exam Paper
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Generated Items */}
-          {generatedItems.map((item) => (
-            <div
-              key={item.id}
-              className="aspect-square bg-white rounded-2xl shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-300 p-6 flex flex-col"
-            >
-              {/* Header */}
-              <div className="flex justify-between items-start mb-4">
                 <div>
-                  <h3 className="font-bold text-gray-900 text-lg truncate">
-                    {item.title}
-                  </h3>
-                  <p className="text-sm text-gray-500">{item.date}</p>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Difficulty
+                  </label>
+                  <select
+                    value={formData.difficulty}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        difficulty: e.target.value,
+                      }))
+                    }
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2
+                             focus:ring-blue-500 focus:border-blue-500 transition bg-white dark:bg-gray-700
+                             text-gray-900 dark:text-white"
+                  >
+                    <option
+                      value=""
+                      className="text-gray-500 dark:text-gray-400"
+                    >
+                      Select difficulty
+                    </option>
+                    {difficultyOptions.map((o) => (
+                      <option key={o} className="text-gray-900 dark:text-white">
+                        {o}
+                      </option>
+                    ))}
+                  </select>
                 </div>
-                <span
-                  className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    item.difficulty === "Easy"
-                      ? "bg-green-100 text-green-800"
-                      : item.difficulty === "Medium"
-                      ? "bg-yellow-100 text-yellow-800"
-                      : "bg-red-100 text-red-800"
-                  }`}
+              </div>
+
+              {/* Generate */}
+              <div className="flex justify-end">
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={handleGenerateTile}
+                  disabled={
+                    !formData.class || !formData.subject || !formData.difficulty
+                  }
+                  className="px-8 py-3 bg-blue-600 text-white font-semibold rounded-xl
+                           hover:bg-blue-700 disabled:bg-gray-300 dark:disabled:bg-gray-600 disabled:cursor-not-allowed
+                           transition shadow-lg"
                 >
-                  {item.difficulty}
-                </span>
+                  Generate Tile
+                </motion.button>
               </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-              {/* Content */}
-              <div className="flex-1 space-y-3">
-                <div className="flex items-center text-gray-600">
-                  <BookOpen className="w-4 h-4 mr-2" />
-                  <span className="text-sm">{item.class}</span>
-                </div>
-
-                <div className="flex items-center text-gray-600">
-                  <FileText className="w-4 h-4 mr-2" />
-                  <span className="text-sm">{item.questions} Questions</span>
-                </div>
-
-                <div className="flex items-center text-gray-600">
-                  <Clock className="w-4 h-4 mr-2" />
-                  <span className="text-sm">{item.duration}</span>
-                </div>
-              </div>
-
-              {/* Actions */}
-              <div className="flex space-x-2 mt-4">
-                <button className="flex-1 bg-blue-500 text-white py-2 rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors">
-                  Edit
-                </button>
-                <button className="flex-1 bg-gray-100 text-gray-700 py-2 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors">
-                  View
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Empty State */}
-        {generatedItems.length === 0 && !showGenerator && (
-          <div className="text-center py-12">
-            <BookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-500 mb-2">
-              No exam papers yet
-            </h3>
-            <p className="text-gray-400">
-              Click the + tile to create your first exam paper
-            </p>
+        {/* Empty state */}
+        {tiles.length === 0 && !isFormOpen && (
+          <div className="text-center py-16 text-gray-600 dark:text-gray-400">
+            No tiles yet. Click the + button above to create one.
           </div>
         )}
       </div>
@@ -245,4 +332,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default Home;

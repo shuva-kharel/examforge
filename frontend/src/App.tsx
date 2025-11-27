@@ -6,6 +6,7 @@ import ConfirmAccount from "./pages/auth/confirm-account";
 import ResetPassword from "./pages/auth/reset-password";
 import VerifyMfa from "./pages/auth/verify-mfa";
 import Home from "./pages/home";
+import Leaderboard from "./pages/leaderboard";
 import Settings from "./pages/settings";
 import Session from "./pages/sessions";
 import NotFound from "./pages/notFound";
@@ -57,6 +58,7 @@ function App() {
         <Route element={<AuthRoute />}>
           <Route element={<AppLayout />}>
             <Route path="home" element={<Home />} />
+            <Route path="leaderboard" element={<Leaderboard />} />
             <Route path="settings" element={<Settings />} />
             <Route path="sessions" element={<Session />} />
           </Route>

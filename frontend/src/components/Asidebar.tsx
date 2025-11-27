@@ -10,6 +10,7 @@ import {
   Settings,
   SunIcon,
   User,
+  Trophy,
 } from "lucide-react";
 import {
   Sidebar,
@@ -55,6 +56,11 @@ const Asidebar = () => {
       title: "Sessions",
       url: "/sessions",
       icon: Lock,
+    },
+    {
+      title: "Leaderboard",
+      url: "/leaderboard",
+      icon: Trophy,
     },
     {
       title: "Account",
