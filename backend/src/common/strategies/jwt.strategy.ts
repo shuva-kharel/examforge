@@ -12,6 +12,7 @@ import { userService } from "../../modules/user/user.module";
 interface JwtPayload {
   userId: string;
   sessionId: string;
+  role: string;
 }
 
 const options: StrategyOptionsWithRequest = {
@@ -41,7 +42,11 @@ export const setupJwtStrategy = (passport: PassportStatic) => {
         if (!user) {
           return done(null, false);
         }
+
+        // Set sessionId and userId on request object for easy access
         req.sessionId = payload.sessionId;
+        req.userId = payload.userId; // Add this line
+
         return done(null, user);
       } catch (error) {
         return done(error, false);

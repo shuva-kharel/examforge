@@ -2,3 +2,29 @@
 2025-11-28 00:05:18 [INFO]: Creating session for user ID: 6901912900711aba7e40b929
 2025-11-28 00:26:33 [INFO]: Login attempt for email: shuvakharel007@gmail.com
 2025-11-28 00:26:33 [INFO]: Creating session for user ID: 6901912900711aba7e40b929
+2025-11-28 22:30:26 [INFO]: Login attempt for email: shuvakharel007@gmail.com
+2025-11-28 22:30:26 [INFO]: Creating session for user ID: 6901912900711aba7e40b929
+2025-11-28 22:35:22 [INFO]: Login attempt for email: test@example.com
+2025-11-28 22:35:22 [INFO]: Creating session for user ID: 6929d2c0556e03dc351d950a
+2025-11-28 22:44:34 [INFO]: Login attempt for email: test@example.com
+2025-11-28 22:44:34 [INFO]: Creating session for user ID: 6929d2c0556e03dc351d950a
+2025-11-28 22:47:48 [INFO]: Login attempt for email: test@example.com
+2025-11-28 22:47:48 [INFO]: Creating session for user ID: 6929d2c0556e03dc351d950a
+2025-11-28 22:58:58 [INFO]: Login attempt for email: test@example.com
+2025-11-28 22:58:58 [WARN]: Login failed: Email not verified for user: test@example.com
+2025-11-28 23:09:21 [INFO]: Login attempt for email: test@example.com
+2025-11-28 23:09:21 [WARN]: Login failed: Email not verified for user: test@example.com
+2025-11-28 23:11:49 [INFO]: Email verified successfully for user ID: 6929dafdcbad2e14691b2e01
+2025-11-28 23:11:53 [INFO]: Login attempt for email: joboxet500@datehype.com
+2025-11-28 23:11:53 [INFO]: Creating session for user ID: 6929dafdcbad2e14691b2e01
+2025-11-28 23:14:01 [INFO]: Login attempt for email: joboxet500@datehype.com
+2025-11-28 23:14:01 [INFO]: 2FA required for user ID: 6929dafdcbad2e14691b2e01
+2025-11-28 23:52:38 [INFO]: Email verified successfully for user ID: 6929e4b755022d06596a93d4
+2025-11-28 23:53:49 [INFO]: Login attempt for: john.doe@example.com
+2025-11-28 23:53:49 [WARN]: Login failed: User with login john.doe@example.com not found
+2025-11-28 23:54:11 [INFO]: Login attempt for: shuvakharel007@gmail.com
+2025-11-28 23:54:11 [INFO]: Creating session for user ID: 6929e4b755022d06596a93d4
+2025-11-28 23:56:10 [INFO]: Login attempt for: shuvakharel007@gmail.com
+2025-11-28 23:56:10 [INFO]: Creating session for user ID: 6929e4b755022d06596a93d4
+2025-11-28 23:59:12 [INFO]: Login attempt for: shuvakharel007@gmail.com
+2025-11-28 23:59:12 [INFO]: Creating session for user ID: 6929e4b755022d06596a93d4

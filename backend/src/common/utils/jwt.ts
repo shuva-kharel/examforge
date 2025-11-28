@@ -2,10 +2,12 @@ import jwt, { SignOptions, VerifyOptions } from "jsonwebtoken";
 import { SessionDocument } from "../../database/models/session.model";
 import { UserDocument } from "../../database/models/user.model";
 import { config } from "../../config/app.config";
+import { UserRole } from "../../database/models/user.model"; // Import UserRole
 
 export type AccessTPayload = {
   userId: UserDocument["_id"];
   sessionId: SessionDocument["_id"];
+  role: UserRole; // Add role field
 };
 
 export type RefreshTPayload = {

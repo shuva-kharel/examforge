@@ -8,6 +8,8 @@ import {
   registerSchema,
   resetPasswordSchema,
   verificationEmailSchema,
+  updateProfileSchema,
+  changePasswordSchema,
 } from "../../common/validators/auth.validator";
 import {
   clearAuthenticationCookies,
@@ -18,7 +20,15 @@ import {
 import {
   NotFoundException,
   UnauthorizedException,
+  BadRequestException,
 } from "../../common/utils/catch-errors";
+
+// Extend Express Request type to include userId and sessionId
+interface AuthenticatedRequest extends Request {
+  userId?: string;
+  sessionId?: string;
+  user?: any;
+}
 
 export class AuthController {
   private authService: AuthService;
@@ -29,9 +39,7 @@ export class AuthController {
 
   public register = asyncHandler(
     async (req: Request, res: Response): Promise<any> => {
-      const body = registerSchema.parse({
-        ...req.body,
-      });
+      const body = registerSchema.parse(req.body);
       const { user } = await this.authService.register(body);
       return res.status(HTTPSTATUS.CREATED).json({
         message: "User registered successfully",
@@ -113,8 +121,9 @@ export class AuthController {
 
   public forgotPassword = asyncHandler(
     async (req: Request, res: Response): Promise<any> => {
-      const email = emailSchema.parse(req.body.email);
-      await this.authService.forgotPassword(email);
+      const { email } = req.body;
+      const validatedEmail = emailSchema.parse(email);
+      await this.authService.forgotPassword(validatedEmail);
 
       return res.status(HTTPSTATUS.OK).json({
         message: "Password reset email sent",
@@ -125,8 +134,7 @@ export class AuthController {
   public resetPassword = asyncHandler(
     async (req: Request, res: Response): Promise<any> => {
       const body = resetPasswordSchema.parse(req.body);
-
-      await this.authService.resePassword(body);
+      await this.authService.resetPassword(body);
 
       return clearAuthenticationCookies(res).status(HTTPSTATUS.OK).json({
         message: "Reset Password successfully",
@@ -135,7 +143,7 @@ export class AuthController {
   );
 
   public logout = asyncHandler(
-    async (req: Request, res: Response): Promise<any> => {
+    async (req: AuthenticatedRequest, res: Response): Promise<any> => {
       const sessionId = req.sessionId;
       if (!sessionId) {
         throw new NotFoundException("Session is invalid.");
@@ -143,6 +151,89 @@ export class AuthController {
       await this.authService.logout(sessionId);
       return clearAuthenticationCookies(res).status(HTTPSTATUS.OK).json({
         message: "User logout successfully",
+      });
+    }
+  );
+
+  public resendVerificationEmail = asyncHandler(
+    async (req: Request, res: Response): Promise<any> => {
+      const { email } = req.body;
+      const validatedEmail = emailSchema.parse(email);
+      await this.authService.resendVerificationEmail(validatedEmail);
+      return res.status(HTTPSTATUS.OK).json({
+        message: "Verification email sent successfully",
+      });
+    }
+  );
+
+  public getProfile = asyncHandler(
+    async (req: AuthenticatedRequest, res: Response): Promise<any> => {
+      const userId = req.userId;
+
+      if (!userId) {
+        throw new UnauthorizedException("User not authenticated");
+      }
+
+      const { user } = await this.authService.getProfile(userId);
+
+      if (!user) {
+        throw new NotFoundException("User not found");
+      }
+
+      return res.status(HTTPSTATUS.OK).json({
+        message: "Profile retrieved successfully",
+        data: user,
+      });
+    }
+  );
+
+  public updateProfile = asyncHandler(
+    async (req: AuthenticatedRequest, res: Response): Promise<any> => {
+      const userId = req.userId;
+
+      if (!userId) {
+        throw new UnauthorizedException("User not authenticated");
+      }
+
+      const body = updateProfileSchema.parse(req.body);
+      const { user } = await this.authService.updateProfile(userId, body);
+
+      return res.status(HTTPSTATUS.OK).json({
+        message: "Profile updated successfully",
+        data: user,
+      });
+    }
+  );
+
+  public changePassword = asyncHandler(
+    async (req: AuthenticatedRequest, res: Response): Promise<any> => {
+      const userId = req.userId;
+
+      if (!userId) {
+        throw new UnauthorizedException("User not authenticated");
+      }
+
+      const body = changePasswordSchema.parse(req.body);
+      await this.authService.changePassword(userId, body);
+
+      return res.status(HTTPSTATUS.OK).json({
+        message: "Password changed successfully",
+      });
+    }
+  );
+
+  public getUserByUsername = asyncHandler(
+    async (req: AuthenticatedRequest, res: Response): Promise<any> => {
+      const { username } = req.params;
+      const { user } = await this.authService.getUserByUsername(username);
+
+      if (!user) {
+        throw new NotFoundException("User not found");
+      }
+
+      return res.status(HTTPSTATUS.OK).json({
+        message: "User retrieved successfully",
+        data: user,
       });
     }
   );
