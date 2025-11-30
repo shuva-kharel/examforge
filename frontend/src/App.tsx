@@ -9,6 +9,9 @@ import Home from "./pages/home";
 import Leaderboard from "./pages/leaderboard";
 import Settings from "./pages/settings";
 import Session from "./pages/sessions";
+import AccountPage from "./pages/account";
+import PublicProfile from "./pages/profile";
+import MagicLogin from "./pages/auth/magic-login";
 import NotFound from "./pages/notFound";
 import AppLayout from "./layout/AppLayout";
 import BaseLayout from "./layout/BaseLayout";
@@ -51,6 +54,7 @@ function App() {
             <Route path="forgot-password" element={<ForgotPassword />} />
             <Route path="reset-password" element={<ResetPassword />} />
             <Route path="verify-mfa" element={<VerifyMfa />} />
+            <Route path="/auth/magic-login" element={<MagicLogin />} />
           </Route>
         </Route>
 
@@ -61,10 +65,12 @@ function App() {
             <Route path="leaderboard" element={<Leaderboard />} />
             <Route path="settings" element={<Settings />} />
             <Route path="sessions" element={<Session />} />
+            <Route path="/account" element={<AccountPage />} />
           </Route>
         </Route>
 
         {/* Catch-all for undefined routes */}
+        <Route path="/profile/:username" element={<PublicProfile />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>

@@ -628,3 +628,133 @@ export const loginAlertTemplate = (
   </html>
   `,
 });
+
+export const magicLinkTemplate = (
+  userName: string,
+  magicLink: string,
+  brandColor: string = "#2563EB"
+) => ({
+  subject: "Your Magic Login Link - ExamForge",
+  text: `Hello ${userName}, click the following link to log in to ExamForge: ${magicLink}`,
+  html: `
+  <html>
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <style>
+        body {
+          margin: 0;
+          padding: 0;
+          background: linear-gradient(135deg, #f0f4ff, #ffffff);
+          font-family: 'Inter', Arial, sans-serif;
+          color: #333333;
+        }
+        .container {
+          max-width: 600px;
+          margin: 50px auto;
+          background: #ffffff;
+          border-radius: 16px;
+          overflow: hidden;
+          box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+        }
+        .header {
+          background: linear-gradient(135deg, ${brandColor}, #3b82f6);
+          color: #ffffff;
+          text-align: center;
+          padding: 35px 20px;
+          font-size: 28px;
+          font-weight: 800;
+          letter-spacing: 0.5px;
+        }
+        .logo {
+          background: rgba(255, 255, 255, 0.15);
+          display: inline-block;
+          padding: 10px 15px;
+          border-radius: 12px;
+          font-size: 22px;
+          font-weight: bold;
+          margin-bottom: 8px;
+        }
+        .content {
+          padding: 40px 30px;
+          text-align: center;
+        }
+        .content h1 {
+          font-size: 26px;
+          margin-bottom: 15px;
+          color: #111827;
+        }
+        .content p {
+          font-size: 16px;
+          color: #6b7280;
+          line-height: 1.6;
+          margin-bottom: 25px;
+        }
+        .button {
+          display: inline-block;
+          padding: 14px 30px;
+          background: linear-gradient(90deg, ${brandColor}, #3b82f6);
+          color: #ffffff !important;
+          font-weight: 600;
+          font-size: 16px;
+          text-decoration: none;
+          border-radius: 8px;
+          box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+          transition: all 0.2s ease-in-out;
+        }
+        .button:hover {
+          background: linear-gradient(90deg, #1d4ed8, #2563eb);
+        }
+        .security-note {
+          background: #f8fafc;
+          border-radius: 8px;
+          padding: 15px;
+          margin: 20px 0;
+          text-align: left;
+          border-left: 4px solid ${brandColor};
+        }
+        .footer {
+          padding: 25px;
+          text-align: center;
+          font-size: 13px;
+          color: #9ca3af;
+          border-top: 1px solid #e5e7eb;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <div class="logo">ExamForge</div>
+          Magic Login Link
+        </div>
+        <div class="content">
+          <h1>Your Instant Login Link</h1>
+          <p>Hello <strong>${userName}</strong>,</p>
+          <p>Click the button below to securely log in to your ExamForge account. No password needed!</p>
+
+          <a href="${magicLink}" class="button">Log In to ExamForge</a>
+
+          <div class="security-note">
+            <strong>🔒 Security Notice:</strong>
+            <ul style="margin: 10px 0; padding-left: 20px;">
+              <li>This link will expire in 15 minutes</li>
+              <li>If you didn't request this link, please ignore this email</li>
+              <li>For security, never share your magic links with anyone</li>
+            </ul>
+          </div>
+
+          <p style="margin-top: 25px; font-size: 14px;">
+            Or copy and paste this link in your browser:<br>
+            <a href="${magicLink}" style="color: ${brandColor}; word-break: break-all;">${magicLink}</a>
+          </p>
+        </div>
+        <div class="footer">
+          <p>© ${new Date().getFullYear()} ExamForge. All rights reserved.</p>
+          <p>Need help? <a href="mailto:support@examforge.com" style="color:${brandColor}; text-decoration:none;">Contact support</a></p>
+        </div>
+      </div>
+    </body>
+  </html>
+  `,
+});

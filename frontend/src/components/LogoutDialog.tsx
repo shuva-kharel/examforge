@@ -29,7 +29,7 @@ const LogoutDialog = (props: {
       queryClient.resetQueries({
         queryKey: ["authUser"],
       });
-      navigate("/");
+      navigate("/login");
       setIsOpen(false); // Close dialog
     },
     onError: (error) => {

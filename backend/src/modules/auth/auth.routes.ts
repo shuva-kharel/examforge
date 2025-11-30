@@ -13,6 +13,9 @@ authRoutes.post("/password/reset", authController.resetPassword);
 authRoutes.get("/refresh", authController.refreshToken);
 authRoutes.post("/resend-verification", authController.resendVerificationEmail);
 authRoutes.get("/user/:username", authController.getUserByUsername);
+authRoutes.post("/magic-link/send", authController.sendMagicLink);
+authRoutes.post("/magic-link/verify", authController.verifyMagicLink);
+authRoutes.get("/magic-login", authController.verifyMagicLink); // For direct link access
 
 // Protected routes
 authRoutes.post("/logout", authenticateJWT, authController.logout);

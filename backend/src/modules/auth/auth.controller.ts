@@ -237,4 +237,36 @@ export class AuthController {
       });
     }
   );
+  public sendMagicLink = asyncHandler(
+    async (req: Request, res: Response): Promise<any> => {
+      const { email } = req.body;
+      const validatedEmail = emailSchema.parse(email);
+      const result = await this.authService.sendMagicLink(validatedEmail);
+
+      return res.status(HTTPSTATUS.OK).json({
+        message: result.message,
+      });
+    }
+  );
+
+  public verifyMagicLink = asyncHandler(
+    async (req: Request, res: Response): Promise<any> => {
+      const { token } = req.body;
+      const userAgent = req.headers["user-agent"];
+
+      const { user, accessToken, refreshToken } =
+        await this.authService.verifyMagicLink(token, userAgent);
+
+      return setAuthenticationCookies({
+        res,
+        accessToken,
+        refreshToken,
+      })
+        .status(HTTPSTATUS.OK)
+        .json({
+          message: "Login successful",
+          user,
+        });
+    }
+  );
 }

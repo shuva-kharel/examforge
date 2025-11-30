@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
 import { ErrorCode } from "../../common/enums/error-code.enum";
 import { VerificationEnum } from "../../common/enums/verification-code.enum";
 import {
@@ -38,6 +39,7 @@ import {
   passwordResetTemplate,
   verifyEmailTemplate,
   loginAlertTemplate,
+  magicLinkTemplate,
 } from "../../mailers/templates/template";
 import { HTTPSTATUS } from "../../config/http.config";
 import { hashValue } from "../../common/utils/bcrypt";
@@ -210,6 +212,100 @@ export class AuthService {
     await this.sendLoginNotification(user, userAgent);
 
     return { user, accessToken, refreshToken, mfaRequired: false };
+  }
+
+  public async sendMagicLink(email: string) {
+    const user = await UserModel.findOne({ email });
+    if (!user) {
+      // Don't reveal if user exists for security
+      return {
+        message:
+          "If an account exists, a magic link has been sent to your email",
+      };
+    }
+
+    // Generate magic token
+    const magicToken = crypto.randomBytes(32).toString("hex");
+    const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+
+    // Store magic token in verification collection
+    await VerificationCodeModel.create({
+      userId: user._id,
+      code: magicToken,
+      type: VerificationEnum.MAGIC_LINK,
+      expiresAt,
+    });
+
+    const magicLink = `${config.APP_ORIGIN}/auth/magic-login?token=${magicToken}`;
+
+    // Send magic link email
+    const info = await sendEmail({
+      to: user.email,
+      ...magicLinkTemplate(user.name, magicLink),
+    });
+
+    if (!info.messageId) {
+      throw new InternalServerException("Failed to send magic link email");
+    }
+
+    logger.info(`Magic link sent to user: ${user.email}`);
+
+    return { message: "Magic link sent to your email" };
+  }
+
+  public async verifyMagicLink(token: string, userAgent?: string) {
+    const validToken = await VerificationCodeModel.findOne({
+      code: token,
+      type: VerificationEnum.MAGIC_LINK,
+      expiresAt: { $gt: new Date() },
+    });
+
+    if (!validToken) {
+      throw new BadRequestException("Invalid or expired magic link");
+    }
+
+    const user = await UserModel.findById(validToken.userId);
+    if (!user) {
+      throw new NotFoundException("User not found");
+    }
+
+    // Check if email is verified
+    if (!user.isEmailVerified) {
+      user.isEmailVerified = true;
+      await user.save();
+      logger.info(`Email auto-verified via magic link for user: ${user.email}`);
+    }
+
+    // Create session
+    const session = await SessionModel.create({
+      userId: user._id,
+      userAgent,
+    });
+
+    // Generate tokens
+    const accessToken = signJwtToken({
+      userId: user._id,
+      sessionId: session._id,
+      role: user.role,
+    });
+    const refreshToken = signJwtToken(
+      { sessionId: session._id },
+      refreshTokenSignOptions
+    );
+
+    // Delete used magic token
+    await validToken.deleteOne();
+
+    // Send login notification email
+    await this.sendLoginNotification(user, userAgent);
+
+    logger.info(`Magic link login successful for user: ${user.email}`);
+
+    return {
+      user,
+      accessToken,
+      refreshToken,
+    };
   }
 
   public async refreshToken(refreshToken: string) {

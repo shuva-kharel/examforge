@@ -64,7 +64,7 @@ const Asidebar = () => {
     },
     {
       title: "Account",
-      url: "#",
+      url: "/account",
       icon: User,
     },
 
