@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import { useCallback } from "react";
 import { Loader } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { revokeMFAMutationFn } from "@/lib/api";

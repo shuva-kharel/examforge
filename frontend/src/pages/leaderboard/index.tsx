@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Trophy,
   Users,
@@ -175,7 +175,7 @@ const getRankIcon = (rank: number) => {
 };
 
 const Leaderboard = () => {
-  const { theme } = useTheme();
+  useTheme();
   const [activeCategory, setActiveCategory] = useState<"global" | "community">(
     "global"
   );

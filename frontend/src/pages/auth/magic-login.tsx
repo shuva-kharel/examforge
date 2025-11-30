@@ -18,7 +18,7 @@ export default function MagicLogin() {
 
   const verifyMagicLink = useMutation({
     mutationFn: verifyMagicLinkMutationFn,
-    onSuccess: (response) => {
+    onSuccess: () => {
       setStatus("success");
       toast({
         title: "Success",

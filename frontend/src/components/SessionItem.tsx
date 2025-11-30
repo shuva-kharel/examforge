@@ -1,4 +1,3 @@
-import React from "react";
 import { Loader, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { parseSession } from "@/lib/parse-session";

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Plus, BookOpen, Target, Award } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "@/context/theme-provider.tsx"; // Adjust the import path as needed
@@ -57,7 +57,7 @@ const difficultyColors = {
 };
 
 const Home = () => {
-  const { theme } = useTheme();
+  useTheme();
   const [tiles, setTiles] = useState<Tile[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [formData, setFormData] = useState({

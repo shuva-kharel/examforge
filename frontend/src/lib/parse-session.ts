@@ -2,8 +2,6 @@ import UAParser from "ua-parser-js";
 import { format, formatDistanceToNowStrict, isPast } from "date-fns";
 import { Smartphone, Laptop, LucideIcon } from "lucide-react";
 
-type DeviceType = "desktop" | "mobile";
-
 interface SessionInfo {
   deviceType: string;
   browser: string;
